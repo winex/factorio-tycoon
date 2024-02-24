@@ -1,0 +1,26 @@
+name: Luacheck
+
+on:
+  push:
+    branches:
+      - main
+      - test
+  pull_request:
+    branches:
+      - main
+      - test
+
+jobs:
+  sile:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout w/ submodules
+      uses: actions/checkout@v4
+      with:
+          submodules: 'true'
+
+    - name: Luacheck linter
+      uses: lunarmodules/luacheck@v1
+      with:
+          args:  --config Factorio-luacheckrc/.luacheckrc --std lua53+luacheckrc .
