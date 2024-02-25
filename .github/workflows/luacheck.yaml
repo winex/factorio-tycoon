@@ -23,4 +23,4 @@ jobs:
     - name: Luacheck linter
       uses: lunarmodules/luacheck@v1
       with:
-          args:  --config Factorio-luacheckrc/.luacheckrc .
+          args: . --config Factorio-luacheckrc/.luacheckrc --exclude-files 'Factorio-luacheckrc/*'
