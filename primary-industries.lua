@@ -56,7 +56,7 @@ end
 
 local function place_primary_industry_at_position(position, entity_name)
     if position ~= nil then
-        -- This is mainly here to avoid two industries being right next to each other, 
+        -- This is mainly here to avoid two industries being right next to each other,
         -- blocking each others pipes.
         local nearby_primary_industries_count = game.surfaces[Constants.STARTING_SURFACE_ID].count_entities_filtered{
             position = position,
@@ -113,11 +113,11 @@ end
 local function find_position_for_initial_apple_farm()
     local coordinate_candidates = {}
     for _ = 1, 5, 1 do
-        
+
         local starting_position = {math.random(-30, 30), math.random(-30, 30)}
         local position = game.surfaces[Constants.STARTING_SURFACE_ID].find_non_colliding_position("tycoon-apple-farm", starting_position, 200, 5, true)
         if position ~= nil then
-            
+
             local water_tiles = game.surfaces[Constants.STARTING_SURFACE_ID].find_tiles_filtered{
                 position = position,
                 radius = 100,

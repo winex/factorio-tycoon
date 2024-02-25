@@ -289,7 +289,7 @@ local function updateProvidedAmounts(city)
             setAdditionalNeedsProvided(city, resource, 0)
         end
     end
-    
+
     local waterTowers = listSpecialCityBuildings(city, "tycoon-water-tower")
     if #waterTowers >= 1 then
         local totalAvailable = 0
@@ -406,7 +406,7 @@ local function consumeItem(item, suppliers, city, isConstruction)
             table.insert(entitiesWithSupply, entity)
         end
     end
-    
+
     local requiredAmount = item.required
     local consumedAmount = 0
     for _, entity in ipairs(entitiesWithSupply) do
@@ -481,7 +481,7 @@ end
 
 --- @param city City
 local function consumeAdditionalNeeds(city)
-    
+
     local markets = listSpecialCityBuildings(city, "tycoon-market")
 
     if #markets >= 1 then

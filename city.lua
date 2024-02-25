@@ -1031,7 +1031,7 @@ local function growAtRandomRoadEnd(city)
     else
         -- todo: in what cases can't we build here? entity collision? player collision?
         -- buildings should come later to fill empty gaps that have no collisions
-        
+
         -- Add some weight onto this roadEnd, so that it gets processed later (compared to others who are at a similar distance or don't have their weight changed as much)
         -- roadEnd.additionalWeight = (roadEnd.additionalWeight or 1) * 1.2
         Queue.pushright(city.roadEnds, roadEnd)
@@ -1321,7 +1321,7 @@ local function clearCell(city, upgradeCell)
     if not upgradeCell.cell.entity.valid then
         return
     end
-    
+
     if global.tycoon_house_lights ~= nil and global.tycoon_house_lights[upgradeCell.cell.entity.unit_number] then
         global.tycoon_house_lights[upgradeCell.cell.entity.unit_number].destroy()
     end
@@ -1432,7 +1432,7 @@ local function is_allowed_upgrade_to_tier(city, next_tier)
     if Util.countPendingLowerTierHouses(current_tier_count, next_tier_count, house_ratios[next_tier]) > 0 then
         return false
     end
-    
+
     return true
 end
 
@@ -1528,7 +1528,7 @@ local function start_house_construction()
             for _, tier in ipairs(housing_tiers) do
                 if has_time_elapsed_for_construction(city, tier)
                     and buildables[tier] ~= nil then
-                        
+
                     assert((city.construction_timers or {})[tier], "Expected construction timer to be defined by them time the timer check resolves to true.")
                     city.construction_timers[tier].last_construction = game.tick
 

@@ -64,7 +64,7 @@ local function on_removed(event)
     if global.tycoon_city_buildings == nil then
         return
     end
-    
+
     local building = global.tycoon_city_buildings[unit_number]
 
     if (building or {}).entity == nil then
@@ -72,7 +72,7 @@ local function on_removed(event)
     end
 
     if Util.isSupplyBuilding(building.entity_name) or building.entity_name == "tycoon-passenger-train-station" then
-        
+
         local nearby_town_hall = game.surfaces[Constants.STARTING_SURFACE_ID].find_entities_filtered{
             position=building.entity.position,
             radius=Constants.CITY_RADIUS,
@@ -94,7 +94,7 @@ local function on_removed(event)
 
         invalidateSpecialBuildingsList(city, building.entity_name)
     elseif Util.isHouse(building.entity_name) then
-        
+
         local housing_type
         if string.find(building.entity_name, "tycoon-house-simple-", 1, true) then
             housing_type = "simple"
@@ -105,7 +105,7 @@ local function on_removed(event)
         end
 
         assert(housing_type, "Uknown housing_type in on_removed: " .. housing_type)
-        
+
         local cityId = building.cityId
         local city = Util.findCityById(cityId)
         if city ~= nil then

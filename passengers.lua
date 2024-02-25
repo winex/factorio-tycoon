@@ -178,14 +178,14 @@ local function findCityByName(name)
 end
 
 local function getCredits(passenger)
-    
+
     local originCity = findCityByName(passenger.origin)
     local destinationCity = findCityByName(passenger.destination)
     if originCity == nil or destinationCity == nil then
         game.print("The tycoon mod has encountered a problem: Credits for a passenger couldn't be awarded because the origin or destination city could not be found.")
         return 0
     end
-    
+
     local distance = Util.calculateDistance(originCity.center, destinationCity.center)
     local ticksNeeded = game.tick - passenger.created
     -- With vanilla, robot research brings them to 9 tiles per second when level 6 is researched (the first one that needs space science).

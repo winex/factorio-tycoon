@@ -72,7 +72,7 @@ local function getEnergyForCrafting(time, craftingType)
     return energy_usage * (time / (craftingEntity.crafting_speed or craftingEntity.mining_speed))
 end
 
--- input: string 
+-- input: string
 -- output: number
 local function calculateTotalPriceForRecipe(itemName)
     local recipe = game.forces.player.recipes[ingredientsMap[itemName] or itemName]

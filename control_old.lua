@@ -24,7 +24,7 @@ local function invalidateSpecialBuildingsList(city, name)
 
     if city.special_buildings.other[name] ~= nil then
         city.special_buildings.other[name] = nil
-    end 
+    end
 end
 
 local function listSpecialCityBuildings(city, name)
@@ -208,7 +208,7 @@ script.on_event({defines.events.on_built_entity, defines.events.on_robot_built_e
             cityId = cityId
         }
     end
-    
+
 end)
 
 --- @param entityName string
@@ -232,7 +232,7 @@ script.on_event({
     if global.tycoon_city_buildings == nil then
         return
     end
-    
+
     local unit_number = event.unit_number
     local building = global.tycoon_city_buildings[unit_number]
 
@@ -241,7 +241,7 @@ script.on_event({
     end
 
     if isSupplyBuilding(building.entity_name) or building.entity_name == "tycoon-passenger-train-station" then
-        
+
         local nearbyTownHall = game.surfaces[Constants.STARTING_SURFACE_ID].find_entities_filtered{position=building.entity.position, radius=Constants.CITY_RADIUS, name="tycoon-town-hall", limit=1}
         if #nearbyTownHall == 0 then
             -- If there's no town hall in range then it probably was destroyed
@@ -675,10 +675,10 @@ script.on_event(defines.events.on_gui_opened, function (gui)
         urbanPlanningCenterGui = player.gui.relative.add{type = "frame", anchor = anchor, caption = {"", {"entity-name.tycoon-urban-planning-center"}}, direction = "vertical", name = guiKey}
 
         Gui.addUrbanPlanningCenterView(urbanPlanningCenterGui)
-        
+
     elseif gui.entity ~= nil and isSupplyBuilding(gui.entity.name) then
         local player = game.players[gui.player_index]
-        
+
         local unit_number = gui.entity.unit_number
         local cityName = findCityByEntityUnitNumber(unit_number)
 
@@ -1189,7 +1189,7 @@ end
 -- commands.add_command("tycoon", nil, function(command)
 --     if command.player_index ~= nil and command.parameter == "spawn_city" then
 --         CityPlanning.addMoreCities(false, true)
-        
+
 --         local cityIndex = #global.tycoon_cities
 --         local city = global.tycoon_cities[cityIndex]
 --         spawnSuppliedBuilding(city, "tycoon-market", "tycoon-apple", 1000)

@@ -66,10 +66,10 @@ local function on_gui_opened(event)
         urbanPlanningCenterGui = player.gui.relative.add{type = "frame", anchor = anchor, caption = {"", {"entity-name.tycoon-urban-planning-center"}}, direction = "vertical", name = guiKey}
 
         Gui.addUrbanPlanningCenterView(urbanPlanningCenterGui)
-        
+
     elseif event.entity ~= nil and Util.isSupplyBuilding(event.entity.name) then
         local player = game.players[event.player_index]
-        
+
         local unit_number = event.entity.unit_number
         local cityName = Util.findCityByEntityUnitNumber(unit_number)
 
@@ -81,8 +81,8 @@ local function on_gui_opened(event)
         end
 
         local anchor = {
-            gui = defines.relative_gui_type.container_gui, 
-            name = event.entity.name, 
+            gui = defines.relative_gui_type.container_gui,
+            name = event.entity.name,
             position = defines.relative_gui_position.right
         }
         supplyBuildingView = player.gui.relative.add{
