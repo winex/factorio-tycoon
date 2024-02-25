@@ -1,4 +1,5 @@
 # Factorio Tycoon
+[![Luacheck](https://github.com/winex/factorio-tycoon/actions/workflows/luacheck.yaml/badge.svg?branch=test)](https://github.com/winex/factorio-tycoon/actions/workflows/luacheck.yaml)
 
 This repo holds the source code for the mod [Factorio Tycoon](https://mods.factorio.com/mod/tycoon).
 
