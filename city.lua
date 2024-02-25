@@ -1,4 +1,4 @@
-DEBUG = require("debug")
+local DEBUG = require("debug")
 local Queue = require("queue")
 local Constants = require("constants")
 local Consumption = require("consumption")
