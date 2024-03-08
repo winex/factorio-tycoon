@@ -23,6 +23,12 @@ local function add_to_global_primary_industries(entity)
     if global.tycoon_primary_industries[entity.name] == nil then
         global.tycoon_primary_industries[entity.name] = {}
     end
+    log("add_to_global_primary_industries():"
+        .." ".. tostring(entity.name)
+        .." id: ".. tostring(entity.unit_number)
+        .." ch: ".. math.floor(entity.position.x/Constants.CHUNK_SIZE) ..";".. math.floor(entity.position.y/Constants.CHUNK_SIZE)
+        .." pos: ".. entity.position.x ..", ".. entity.position.y
+    )
     -- WARN: do not insert with unit_number as it converts array to a dict
     table.insert(global.tycoon_primary_industries[entity.name], entity)
 end
