@@ -1,4 +1,5 @@
 
+local Constants = require("constants")
 local CityPlanning = require("city-planner")
 local RecipeCalculator = require("recipe-calculator")
 local GuiEventHandler = require("gui-event-handler")
@@ -15,6 +16,61 @@ local City = require("city")
 local Queue = require("queue")
 local PrimaryIndustries = require("primary-industries")
 local FloorUpgradesQueue = require("floor-upgrades-queue")
+local Util = require("util")
+
+
+--- BOOTSTRAP
+local function init_globals()
+    -- global_once WILL NOT assign when already exists
+    local global_once = Util.global_once
+    local empty_once = Util.empty_once
+
+    --- NOTE: all globals should be listed here. in alphabetical order, please!
+    global_once.tycoon_cities = {}
+    global_once.tycoon_city_buildings = {}
+    --global_once.tycoon_city_limit_warning_6
+    --global_once.tycoon_enable_debug_logging
+    --global_once.tycoon_entity_meta_info
+    --XXX global.tycoon_global_generator
+    --global_once.tycoon_has_initial_apple_farm
+    --global_once.tycoon_house_lights
+    --global_once.tycoon_info_message_primary_industries_displayed
+    --global_once.tycoon_intro_message_displayed
+    --global_once.tycoon_intro_message_treasury_displayed
+    --global_once.tycoon_player_renderings
+    global_once.tycoon_primary_industries = {}
+    global_once.tycoon_tags_queue = {}
+    global_once.tycoon_train_station_limits = {}
+    global_once.tycoon_train_station_passenger_filters = {}
+    global_once.tycoon_warning_mapgen_displayed = false
+
+    -- nested tables are created manually
+    for _, name in pairs(Constants.PRIMARY_INDUSTRIES) do
+        empty_once(global.tycoon_primary_industries, name)
+    end
+end
+
+script.on_init(function()
+    log("on_init(): v".. game.active_mods["tycoon"])
+    global.tycoon_global_generator = game.create_random_generator()
+    init_globals()
+end)
+
+script.on_configuration_changed(function()
+    log("on_configuration_changed(): v".. game.active_mods["tycoon"])
+    init_globals()
+
+    -- reset some globals on every update
+    global.tycoon_city_limit_warning_6 = false
+    global.tycoon_info_message_primary_industries_displayed = false
+    --global.tycoon_intro_message_displayed = false
+    global.tycoon_intro_message_treasury_displayed = false
+end)
+
+-- WARN: never change any globals here - will desync!
+script.on_load(function()
+end)
+
 
 --- TICK HANDLERS
 local ONE_SECOND = 60;
@@ -124,11 +180,6 @@ end)
 
 script.on_event({defines.events.on_lua_shortcut, "tycoon-cities-overview"}, function(event)
     ShortcutHandler.on_shortcut(event)
-end)
-
-script.on_init(function()
-    global.tycoon_global_generator = game.create_random_generator()
-    global.tycoon_city_buildings = {}
 end)
 
 script.on_event(defines.events.on_gui_opened, function (event)
