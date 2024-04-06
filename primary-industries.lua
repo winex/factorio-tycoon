@@ -115,27 +115,27 @@ local function place_primary_industry_at_position(position, entity_name, surface
     if position ~= nil then
         -- This is mainly here to avoid two industries being right next to each other, 
         -- blocking each others pipes.
-        local nearby_primary_industries_count = game.surfaces[surface_index].count_entities_filtered{
+        nearby_count = game.surfaces[surface_index].count_entities_filtered{
             position = position,
             radius = PRIMARY_INDUSTRY_NEARBY_RADIUS,
             name = Constants.PRIMARY_INDUSTRIES,
             limit = 1
         }
-        if nearby_primary_industries_count > 0 then
+        if nearby_count > 0 then
             return nil
         end
         -- Fisheries don't have a pipe input and therfore don't need this condition
         -- they are also placed near water, so this would lead to no fisheries being placed anywhere.
         if entity_name ~= "tycoon-fishery" then
-            local nearby_cliffs_or_water_count = game.surfaces[surface_index].count_tiles_filtered{
+            nearby_count = game.surfaces[surface_index].count_tiles_filtered{
                 position = position,
                 radius = PRIMARY_INDUSTRY_NEARBY_RADIUS,
                 name = {"cliff", "water", "deepwater"},
                 limit = 1
             }
-            if nearby_cliffs_or_water_count > 0 then
-                return nil
-            end
+        end
+        if nearby_count > 0 then
+            return nil
         end
 
         -- check nearby resources
