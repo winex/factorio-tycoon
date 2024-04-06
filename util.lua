@@ -1,6 +1,34 @@
 local Constants = require("constants")
 local UtilBitwise = require("util-bitwise")
 
+--- useful shorthands to type less
+-- NOTE: uncomment any print lines to debug
+local global_once = {}
+
+local function empty_once(t, k)
+--    print("empty_once(): ".. tostring(k))
+    if rawget(t, k) == nil then rawset(t, k, {}) end
+    return rawget(t, k)
+end
+
+-- HACK: magic for the above to work...
+local _mt = {}
+_mt.__index = function(t, k)
+--    print("global_once idx(): ".. tostring(k))
+    if rawget(global, k) == nil then rawset(global, k, {}) end
+    return rawget(global, k)
+end
+_mt.__newindex = function(t, k, v)
+--    print("global_once new(): ".. tostring(k) .." v: ".. serpent.line(v))
+    if rawget(global, k) == nil then rawset(global, k, v) end
+    --return rawget(global, k)  -- not used
+end
+setmetatable(global_once, _mt)
+-- DEBUG: uncomment to hook wrapper onto the real "global" table
+--setmetatable(global, _mt)
+-- HACK: end
+
+
 local function splitString(s, delimiter)
     local parts = {}
     for substring in s:gmatch("[^" .. delimiter .. "]+") do
@@ -378,6 +406,9 @@ local function aggregateSupplyBuildingResources(supplyBuildings)
 end
 
 return {
+    global_once = global_once,
+    empty_once = empty_once,
+
     countPendingLowerTierHouses = countPendingLowerTierHouses,
     hasReachedLowerTierThreshold = hasReachedLowerTierThreshold,
     lowerTierThreshold = lowerTierThreshold,
