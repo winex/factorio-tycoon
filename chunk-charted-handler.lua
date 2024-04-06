@@ -1,7 +1,9 @@
 local Constants = require("constants")
 local PrimaryIndustries = require("primary-industries")
+local CityPlanning = require("city-planner")
 local Util = require("util")
 local TagsQueue = require("tags-queue")
+local RBGen = require("rbgen")
 
 local function randomPrimaryIndustry()
     return Constants.PRIMARY_INDUSTRIES[global.tycoon_global_generator(#Constants.PRIMARY_INDUSTRIES)]
@@ -41,6 +43,75 @@ local function on_chunk_generated(event)
     if event.surface.index == Constants.STARTING_SURFACE_ID and insideStartingArea(event.position) then
         return
     end
+
+    --- NOTE: DISABLES EVERYTHING BELOW this block!
+    if not Constants.RBGEN_ENABLED then
+        return
+    end
+
+    -- TODO: someone should set something for other surfaces to work
+    if not RBGen.isSurfaceAllowed(event.surface.index) then
+        return
+    end
+
+    -- rbgen: generate primary industries
+    for name, params in pairs(Constants.PRIMARY_INDUSTRY_PARAMS) do
+        local entity = RBGen.on_chunk_generated(event, params, name, PrimaryIndustries.place_primary_industry_at_position)
+        if entity == nil then
+            goto continue
+        end
+
+        -- chart
+        chartChunk(event.surface, event.position)
+
+        -- already checks for nil, but why it is separate func? do we need it?
+        PrimaryIndustries.add_to_global_primary_industries(entity)
+
+        -- should be last!
+        ::continue::
+    end
+
+    ---
+    --- NOTE: returns below! town logic should be last
+
+    -- limit towns globally
+    local towns_total = RBGen.count("tycoon-town-hall")
+    if towns_total >= Constants.TOWN_LIMIT then
+        return
+    end
+
+    -- rbgen: generate towns
+    for name, params in pairs(Constants.TOWN_PARAMS) do
+        -- limit towns per region of this "type"
+        if RBGen.get(event.surface.index, event.position, params.region_size, name) > 0 then
+            return
+        end
+
+        -- TODO: fix addCityCallback(), use more sophisticated placing, but don't go out of region
+        local city_name = RBGen.on_chunk_generated(event, params, name, CityPlanning.addCityCallback)
+        if city_name == nil then
+            goto continue
+        end
+
+        -- chart
+        chartChunk(event.surface, event.position)
+
+        local p = Util.chunkToPosition(event.position)
+        local r = Util.chunkToRegion(event.position, params.region_size)
+        log(string.format("town added: pos: %d, %d ch: %d;%d rg: %d;%d name: %s",
+            p.x, p.y, event.position.x, event.position.y, r.x, r.y, city_name
+        ))
+
+        -- this can happen only once, so we can avoid global *_displayed var
+        if towns_total == Constants.TOWN_LIMIT then
+            game.print({ "",
+                "[color=orange]Factorio Tycoon:[/color] ", { "tycoon-warning-limit-reached-city", Constants.TOWN_LIMIT },
+            })
+        end
+
+        -- should be last!
+        ::continue::
+    end
 end
 
 -- WARN: might be called very frequently, for ex: when there are biters wandering - avoid useless stuff
@@ -50,9 +121,15 @@ local function on_chunk_charted(event)
     end
 
     -- place pending tags
+    -- TODO: support tagging everything else here, like cities
     local pos_name = TagsQueue.get(event.position, event.surface_index)
     if pos_name ~= nil then
         PrimaryIndustries.tagIndustry(pos_name[1], pos_name[2], event.surface_index)
+    end
+
+    --- NOTE: DISABLES EVERYTHING BELOW this block!
+    if Constants.RBGEN_ENABLED then
+        return
     end
 
     if global.tycoon_global_generator() < 0.25 then
@@ -116,6 +193,15 @@ local function on_chunk_deleted(event)
         end
     end
     log("tycoon_tags_queue removed: ".. tostring(count))
+
+    -- why is this so hard?!
+    local all_names = {}
+    for _, name in pairs(Constants.PRIMARY_INDUSTRIES) do table.insert(all_names, name) end
+    table.insert(all_names, "tycoon-town-hall")
+
+    for _, chunk in pairs(event.positions) do
+        RBGen.remove_multiple(event.surface_index, chunk, all_names)
+    end
 end
 
 

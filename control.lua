@@ -1,4 +1,3 @@
-
 local Constants = require("constants")
 local CityPlanning = require("city-planner")
 local RecipeCalculator = require("recipe-calculator")
@@ -16,6 +15,7 @@ local City = require("city")
 local Queue = require("queue")
 local PrimaryIndustries = require("primary-industries")
 local FloorUpgradesQueue = require("floor-upgrades-queue")
+local RBGen = require("rbgen")
 local Util = require("util")
 
 
@@ -48,6 +48,8 @@ local function init_globals()
     for _, name in pairs(Constants.PRIMARY_INDUSTRIES) do
         empty_once(global.tycoon_primary_industries, name)
     end
+
+    RBGen.init_globals()
 end
 
 script.on_init(function()

@@ -364,6 +364,12 @@ local function addCity(position, surface_index, predefinedCityName)
     return cityName
 end
 
+local function addCityCallback(position, predefinedCityName, surface_index)
+    -- support as rbgen callback
+    return addCity(position, surface_index, nil)
+end
+
+
 local function getRequiredFundsForNextCity()
     return math.pow(#(global.tycoon_cities or {}), 2) * COST_PER_CITY
 end
@@ -466,6 +472,11 @@ local function tag_cities()
 end
 
 local function build_initial_city()
+    -- don't bug me anymore - bad, bad option! :P
+    if Constants.RBGEN_ENABLED then
+        return
+    end
+
     if (settings.startup["tycoon-spawn-initial-city"] or {}).value and #(global.tycoon_cities or {}) == 0 then
         addMoreCities(true, true)
     end
@@ -476,6 +487,7 @@ return {
     getRequiredFundsForNextCity = getRequiredFundsForNextCity,
     getTotalAvailableFunds = getTotalAvailableFunds,
     addCity = addCity,
+    addCityCallback = addCityCallback,
     tag_cities = tag_cities,
     build_initial_city = build_initial_city,
 }
