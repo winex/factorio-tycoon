@@ -128,6 +128,7 @@ local function place_primary_industry_at_position(position, entity_name, surface
             limit = 1
         }
         if nearby_count > 0 then
+            log("X nearby: close")
             return nil
         end
         -- Fisheries don't have a pipe input and therfore don't need this condition
@@ -141,6 +142,7 @@ local function place_primary_industry_at_position(position, entity_name, surface
             }
         end
         if nearby_count > 0 then
+            log("X nearby: cliff, water, deepwater")
             return nil
         end
 
@@ -154,6 +156,7 @@ local function place_primary_industry_at_position(position, entity_name, surface
             }
         end
         if nearby_count > 0 then
+            log("X nearby: resources")
             return nil
         end
 
