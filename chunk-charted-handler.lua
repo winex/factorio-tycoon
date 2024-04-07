@@ -50,7 +50,8 @@ local function on_chunk_generated(event)
     end
 
     -- TODO: someone should set something for other surfaces to work
-    if not RBGen.isSurfaceAllowed(event.surface.index) then
+    --- tri-state, nil means it will be set by on_chunk_generated()
+    if RBGen.getSurfaceAllowed(event.surface.index) == false then
         return
     end
 
@@ -117,6 +118,11 @@ end
 -- WARN: might be called very frequently, for ex: when there are biters wandering - avoid useless stuff
 local function on_chunk_charted(event)
     if event.surface_index == Constants.STARTING_SURFACE_ID and insideStartingArea(event.position) then
+        return
+    end
+
+    -- if not allowed, don't do anything
+    if Constants.RBGEN_ENABLED and (not RBGen.isSurfaceAllowed(event.surface_index)) then
         return
     end
 

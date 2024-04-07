@@ -54,6 +54,11 @@ function M.on_surface_created(event)
         allowed = false
     end
 
+    -- WARN: mods will probably not have enough data at the same tick surface is created
+    --if not RBGen.isSurfaceSupported(event.surface_index) then
+    --    allowed = false
+    --end
+
     -- WARN: there is not enough info right now, only set false state, use nil to decide later
     if allowed == false then
         RBGen.setSurfaceAllowed(event.surface_index, allowed)

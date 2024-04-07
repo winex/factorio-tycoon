@@ -102,6 +102,45 @@ for k, v in pairs(_tests) do
     assert((M.isSurfaceNameAccepted(k) or false) == v, "test failed: '".. k .."' == ".. tostring(v))
 end
 
+--- NOTE: also exists full type, prefixed by parent type for: moon, planet, star
+--- @alias SESurfaceType
+---| "anomaly"
+---| "asteroid-belt"
+---| "asteroid-field"
+---| "moon"
+---| "orbit"
+---| "planet"
+---| "spaceship"
+---| "star"
+M.supportedSESurfaceTypes = {
+    ["planet"] = true,
+    ["moon"] = true,
+}
+--- WARN: mods would probably have no info at the same tick when surface is created
+--- call this function in on_chunk_generated(), on_surface_created() won't have enough info
+function M.isSurfaceSupported(surface_index)
+    local supported = false  -- unsupported by default
+    local mod = nil
+
+    mod = "space-exploration"
+    if game.active_mods[mod] then
+        --- useful calls
+        --local zone = remote.call(mod, "get_zone_from_name", {zone_name = "Nauvis"})
+        --local zone = remote.call(mod, "get_zone_from_surface_index", {surface_index = surface_index})
+        --local icon = remote.call(mod, "get_zone_icon", {zone_index = zone.index})
+
+        --- NOTE: if this is ever needed rbgen should be called with other parameters from event handlers
+        --- otherwise, it's just unnecessary perfomance hit
+        --local solid = remote.call(mod, "get_zone_is_solid", {zone_index = zone.index})
+        --local space = remote.call(mod, "get_zone_is_space", {zone_index = zone.index})
+
+        local surface_type = remote.call(mod, "get_surface_type", {surface_index = surface_index})
+        supported = M.supportedSESurfaceTypes[surface_type] == true
+    end
+
+    return supported
+end
+
 
 --- @field id number Surface index
 --- @param ch MapPosition | ChunkPosition | Coordinates
@@ -298,6 +337,17 @@ function M.on_chunk_generated(event, params, name, callback_func)
     if params == nil then
         return
     end
+
+    -- call isSurfaceSupported() at least once, reset to nil if recheck is needed
+    if M.getSurfaceAllowed(event.surface.index) == nil then
+        local allowed = M.isSurfaceSupported(event.surface.index)
+        M.setSurfaceAllowed(event.surface.index, allowed)
+
+        if not allowed then
+            return
+        end
+    end
+    --- M.isSurfaceAllowed() should have already been checked in event handler
 
     -- CAPS because it is very important
     local CHUNKS = math.max(RBGEN_CHUNKS_MIN, params.region_size)
