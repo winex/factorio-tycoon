@@ -61,6 +61,47 @@ function M.setSurfaceAllowed(surface_index, v)
     global.tycoon_rbgen_stats[surface_index] = v
 end
 
+--- WARN: can be slow, but we shouldn't call it frequently
+function M.isSurfaceNameAccepted(name)
+    -- rules for automatic surface support
+    if name == nil or name == "" then return end
+
+    local first = name:sub(1, 1)
+    -- does not start with whitespace
+    if first == " " then return end
+    -- starts with capital letter
+    if first ~= first:upper() then return end
+
+    -- does not contain any dashes '-' or underscores
+    if name:find("-") ~= nil then return end
+    if name:find("_") ~= nil then return end
+
+    return true
+end
+
+---
+--- tests
+---
+local _tests = {
+    ["nauvis"] = false, -- this will fail
+    ["_test "] = false,
+    [" _test2 "] = false,
+    ["_ _test3 "] = false,
+    [" Surface Starts With Whitespace "] = false,
+    -- Factorissimo2
+    ["factory-floor"] = false,
+    ["Factory floor with-dashes"] = false,
+    ["Factory floor with_underscores"] = false,
+    -- accepted names
+    ["StartsWithCapital"] = true,
+    ["Some surface"] = true,
+    ["Some Planet"] = true,
+    ["Some Other Planet"] = true,
+}
+for k, v in pairs(_tests) do
+    assert((M.isSurfaceNameAccepted(k) or false) == v, "test failed: '".. k .."' == ".. tostring(v))
+end
+
 
 --- @field id number Surface index
 --- @param ch MapPosition | ChunkPosition | Coordinates
