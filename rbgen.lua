@@ -58,6 +58,10 @@ function M.getSurfaceAllowed(surface_index)
 end
 
 function M.setSurfaceAllowed(surface_index, v)
+    if v ~= nil then
+        log(string.format("setSurfaceAllowed(): surface: [%s] = %s name: %s",
+            tostring(surface_index), tostring(v), (game.surfaces[surface_index] or {}).name))
+    end
     global.tycoon_rbgen_stats[surface_index] = v
 end
 
