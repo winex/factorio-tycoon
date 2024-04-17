@@ -142,6 +142,15 @@ function M.isSurfaceSupported(surface_index)
         supported = M.supportedSESurfaceTypes[surface_type] == true
     end
 
+    mod = "CitiesOfEarth3"
+    if game.active_mods[mod] then
+        -- this mod creates another surface and clears it
+        -- but for some reason there is no on_surface_created event
+        if (game.surfaces[surface_index] or {}).name == "Earth" then
+            supported = true
+        end
+    end
+
     return supported
 end
 
